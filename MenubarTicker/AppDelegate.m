@@ -84,6 +84,7 @@ const NSTimeInterval kPollingInterval = 10.0;
 - (void)updateTrackInfo
 {
     id currentTrack = nil;
+    NSString *artistName = nil;
     
     if ([self.music isRunning] && [self.music playerState] == MusicEPlSPlaying) {
         currentTrack = [self.music currentTrack];
@@ -91,9 +92,17 @@ const NSTimeInterval kPollingInterval = 10.0;
         currentTrack = [self.spotify currentTrack];
     }
 
-    statusItem.button.title = currentTrack
-        ? [NSString stringWithFormat:@"%@ - %@", [currentTrack artist], [currentTrack name]]
-        : @"♫";
+    if (currentTrack) {
+        artistName = [currentTrack artist];
+        if ([artistName length]<=12) {
+            statusItem.button.title = [NSString stringWithFormat:@"%@ by %@", [currentTrack name], artistName];
+        }
+        else if ([artistName length] > 12){
+            statusItem.button.title = [NSString stringWithFormat:@"%@", [currentTrack name]];
+        }
+        } else {
+            statusItem.button.title = @"♫";
+        }
 }
 
 - (void)timerDidFire:(NSTimer *)theTimer
